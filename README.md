@@ -89,6 +89,29 @@ These are set inline in `vercel.json` via the `installCommand`:
 
 No dashboard configuration needed — the vars are baked into the install command.
 
+### Why `next.config.ts` has `serverExternalPackages` and `outputFileTracingIncludes`
+
+`@sparticuz/chromium` ships a brotli-compressed Chromium binary in `bin/` that
+it loads at runtime via `__dirname`-based path lookups. By default Next.js's
+bundler inlines the JS but skips the `.br` binaries, leaving the Lambda without
+a browser (error: `Input directory does not exist: /var/task/node_modules/@sparticuz/chromium/bin`).
+
+Two settings in `next.config.ts` fix this:
+
+```ts
+serverExternalPackages: ["@sparticuz/chromium"],       // don't bundle the JS; require() it at runtime
+outputFileTracingIncludes: {                            // force NFT to copy the .br files
+  "/api/convert": [
+    "./node_modules/@sparticuz/chromium/bin/**/*",
+    "./node_modules/@sparticuz/chromium/package.json",
+  ],
+},
+```
+
+Verified locally: the `.nft.json` for `/api/convert` lists all 4 binaries
+(`chromium.br`, `al2023.tar.br`, `fonts.tar.br`, `swiftshader.tar.br`) plus
+the JS files in `build/`.
+
 ### Memory
 
 The route needs more than the default 1024 MB for image-heavy PDFs. Bump it in
