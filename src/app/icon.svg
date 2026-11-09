@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Coral brand background with rounded corners -->
+  <rect width="64" height="64" rx="14" fill="#E11D48"/>
+
+  <!-- White document body -->
+  <path
+    d="M20 12 H34 L44 22 V48 C44 49.1046 43.1046 50 42 50 H20 C18.8954 50 18 49.1046 18 48 V14 C18 12.8954 18.8954 12 20 12 Z"
+    fill="#FFFFFF"/>
+
+  <!-- Folded corner (slightly darker coral) -->
+  <path d="M34 12 L44 22 L36 22 C34.8954 22 34 21.1046 34 20 V12 Z" fill="#FECDD3"/>
+
+  <!-- Three text lines on the document -->
+  <rect x="24" y="30" width="14" height="2.5" rx="1.25" fill="#E11D48"/>
+  <rect x="24" y="35" width="14" height="2.5" rx="1.25" fill="#E11D48"/>
+  <rect x="24" y="40" width="9" height="2.5" rx="1.25" fill="#E11D48"/>
+</svg>

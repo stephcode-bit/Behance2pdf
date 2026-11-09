@@ -77,14 +77,17 @@ or self-host on Railway / Render / Fly.io where there's no fixed timeout.
 
 ### Required build env vars
 
-These are set in `vercel.json` under `buildEnv` so you don't have to configure
-them in the Vercel dashboard:
+`playwright-core`'s postinstall hook normally downloads a 150 MB Chromium
+binary. We use `@sparticuz/chromium`'s Lambda-friendly binary instead, so we
+skip that download to keep the function under Vercel's 250 MB size limit.
 
-- `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1` — prevents `playwright-core`'s postinstall
-  hook from downloading the full Chromium build (we use `@sparticuz/chromium`'s
-  Lambda binary instead, which keeps the function under the 250 MB limit).
-- `PLAYWRIGHT_SKIP_BROWSER_GC=1`
-- `PLAYWRIGHT_BROWSERS_PATH=0`
+These are set inline in `vercel.json` via the `installCommand`:
+
+```json
+"installCommand": "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 PLAYWRIGHT_SKIP_BROWSER_GC=1 PLAYWRIGHT_BROWSERS_PATH=0 bun install"
+```
+
+No dashboard configuration needed — the vars are baked into the install command.
 
 ### Memory
 
@@ -109,6 +112,9 @@ need any extra config.
     │   ├── api/
     │   │   └── convert/route.ts      # POST → SSE stream of progress + base64 PDF
     │   ├── globals.css
+    │   ├── icon.svg                  # branded vector favicon (source of truth)
+    │   ├── favicon.ico               # 32×32 PNG fallback (auto-detected by Next.js)
+    │   ├── apple-icon.png            # 180×180 PNG for iOS / Safari (auto-detected)
     │   ├── layout.tsx
     │   └── page.tsx                  # landing page composition
     ├── components/
@@ -134,6 +140,26 @@ The same code also runs on any Node host that supports long-running requests
 the bundled `scripts/behance_to_pdf.py` if you prefer the Python implementation
 — just replace the body of `convertBehanceToPdf` in `src/lib/behance-converter.ts`
 with a `child_process.spawn("python3", [...])` call to the script.
+
+## Favicon
+
+The favicon is a branded coral rounded-square with a white document icon and
+three text lines, matching the header logo.
+
+| File | Purpose |
+| --- | --- |
+| `src/app/icon.svg`       | Hand-written source SVG. **Edit this to change the icon.** |
+| `src/app/favicon.ico`    | 32×32 PNG fallback for legacy browsers (auto-detected by Next.js). |
+| `src/app/apple-icon.png` | 180×180 PNG for iOS home screen / Safari (auto-detected by Next.js). |
+
+To regenerate the PNG/ICO after editing the SVG:
+
+```bash
+node scripts/generate_favicons.mjs
+```
+
+Next.js auto-detects all three files via the file-based convention in `src/app/`
+— no `metadata.icons` entry needed in `layout.tsx`.
 
 ## Notes & caveats
 

@@ -20,9 +20,10 @@ export const metadata: Metadata = {
     "Paste a Behance project URL and get an instant, high-resolution PDF of the full case study. Free, no sign-up, no watermark.",
   keywords: ["Behance", "PDF", "converter", "case study", "design", "portfolio"],
   authors: [{ name: "Behance to PDF" }],
-  icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
-  },
+  // Icons are auto-detected by Next.js from these files in src/app/:
+  //   icon.svg          → vector favicon (modern browsers)
+  //   favicon.ico       → 32×32 raster fallback (legacy browsers, /favicon.ico)
+  //   apple-icon.png    → 180×180 PNG for iOS / Safari apple-touch-icon
   openGraph: {
     title: "Behance to PDF",
     description: "Capture any Behance project as a polished PDF in seconds.",
